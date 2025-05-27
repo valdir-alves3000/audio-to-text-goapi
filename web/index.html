@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transcrição de Áudio e Vídeo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="./static/css/global.css">
+</head>
+
+<body>
+    <div class="container">
+        <header class="header">
+            <h1><i class="fas fa-microphone-alt"></i> Transcrição de Áudio e Vídeo</h1>
+            <p class="subtitle">Converta facilmente seu conteúdo em texto</p>
+        </header>
+
+        <main class="main-content">
+            <div id="upload-area" class="upload-container">
+                <div class="upload-icon" id="upload-icon">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                </div>
+
+                <div class="media-container" id="media-container">
+                    <video id="video" style="display: none;" controls></video>
+                    <audio id="audio" style="display: none;" controls></audio>
+                </div>
+
+                <div id="input-group">
+                    <p class="upload-text">Arraste e solte seu arquivo aqui ou</p>
+                    <label for="file-input" class="btn" id="file-input-label">
+                        <i class="fas fa-folder-open"></i> Selecionar arquivo
+                    </label>
+                    <input type="file" id="file-input" accept=".wav,.mp3,.m4a,.mp4,.ogg,.webm">
+                    <p class="supported-formats">Formatos suportados: WAV, MP3, M4A, MP4</p>
+
+                    <button class="btn" id="transcribe-btn">
+                        <i class="fas fa-transcribe"></i> Transcrever
+                    </button>
+                </div>
+            </div>
+
+            <div class="language-selector">
+                <label for="language"><i class="fas fa-language"></i> Idioma:</label>
+                <select id="language">
+                    <option value="en-us">Inglês (EUA)</option>
+                    <option value="pt" selected>Português (Brasil)</option>
+                </select>
+            </div>
+
+            <div id="loading" class="loading" style="display: none;">
+                <div class="loading-spinner"></div>
+                <p>Processando seu arquivo...</p>
+            </div>
+        </main>
+
+        <div id="transcription-result" class="transcription-result" style="display: none;">
+            <h2><i class="fas fa-scroll"></i> Resultado da Transcrição</h2>
+            <div class="result-text" id="result-text"></div>
+            <button class="btn btn-copy" id="copy-btn">
+                <i class="fas fa-copy"></i> Copiar Texto
+            </button>
+        </div>
+    </div>
+
+    <div id="error-modal" class="modal">
+        <div class="modal-content">
+            <span id="error-close" class="close">&times;</span>
+            <div class="modal-icon error-icon">
+                <i class="fas fa-exclamation-circle"></i>
+            </div>
+            <h3>Ocorreu um erro</h3>
+            <p id="error-message"></p>
+        </div>
+    </div>
+
+    <script type="module" src="./static/js/app.js"></script>
+</body>
+
+</html>
