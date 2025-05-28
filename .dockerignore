@@ -1,0 +1,47 @@
+# Virtual environments (Python)
+.venv/
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Node.js dependencies
+node_modules/
+
+# Go build artifacts
+bin/
+vendor/         
+
+# Compiled or temporary files
+*.log
+*.tmp
+*.out
+*.test
+*.swp
+
+# IDE and system-specific files
+.vscode/
+.idea/
+.DS_Store       # macOS system file
+Thumbs.db       # Windows system file
+
+# Project-specific directories (e.g., model files or generated data)
+models/
+
+# Environment variables and secrets
+.env
+
+# Git-related files
+.git/
+.gitignore
+
+# Documentation
+*.md
+
+# Docker-specific files (not needed inside the build context if already used outside)
+Dockerfile
+docker-compose.yml
+
+# Build/automation scripts (optional)
+Makefile
