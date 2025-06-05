@@ -7,10 +7,20 @@ import (
 )
 
 var supportedFormats = map[string]bool{
-	".wav": true,
-	".mp3": true,
+	".aac":  true,
+	".flac": true,
 	".m4a": true,
+	".mp3": true,
 	".mp4": true,
+	".ogg":  true,
+	".opus": true,
+	".wav": true,
+	".avi": true,
+	".flv": true,
+	".mkv": true,
+	".mov": true,
+	".mpeg": true,
+	".webm": true,
 }
 
 func IsSupportedFormat(ext string) bool {
