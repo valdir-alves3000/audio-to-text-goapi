@@ -6,76 +6,110 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Transcrição de Áudio e Vídeo</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="./static/css/global.css">
+    <link rel="stylesheet" href="./static/css/styles.css">
 </head>
 
-<body>
-    <div class="container">
-        <header class="header">
-            <h1><i class="fas fa-microphone-alt"></i> Transcrição de Áudio e Vídeo</h1>
-            <p class="subtitle">Converta facilmente seu conteúdo em texto</p>
+<body class="bg-gray-900 text-white min-h-screen font-sans">
+    <div class="max-w-6xl mx-auto p-6 min-h-screen">
+        <header class="flex justify-between items-center pb-4 border-b border-gray-700 text-primary opacity-80">
+            <h1 class="text-3xl flex items-center gap-2">
+                <i class="fas fa-microphone-alt text-secondary"></i>
+                <span>/</span>
+                <i class="fas fa-video text-secondary"></i>
+                <span id="typing-text" class="typing-effect">Transcription For Me</span>
+            </h1>
+            <nav class="flex gap-6">
+                <a href="/" class="text-primary hover:text-accent transition-colors font-medium">
+                    <i class="fas fa-home mr-2"></i> Home
+                </a>
+                <a href="/docs" class="text-primary hover:text-accent transition-colors font-medium">
+                    <i class="fas fa-info-circle mr-2"></i> Sobre
+                </a>
+            </nav>
         </header>
+        
+        <div class="text-center my-12">
+            <h1 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                Transcrição de Áudio e Vídeo
+            </h1>
+            <p class="text-xl text-gray-400">Converta facilmente seu conteúdo em texto</p>
+        </div>
 
-        <main class="main-content">
-            <div id="upload-area" class="upload-container">
-                <div class="upload-icon" id="upload-icon">
-                    <i class="fas fa-cloud-upload-alt"></i>
+        <main class="space-y-8">
+            <div id="upload-area" class="bg-gray-800 border-2 border-dashed border-gray-600 rounded-xl p-8 text-center transition-all duration-300 relative overflow-hidden hover-slide hover:border-primary hover:bg-gray-750 hover:shadow-lg hover:shadow-primary/30 hover:scale-[1.02]">
+                <div class="upload-icon mb-6 transition-transform duration-300 hover:scale-110" id="upload-icon">
+                    <i class="fas fa-cloud-upload-alt text-6xl text-primary opacity-80"></i>
                 </div>
 
-                <div class="media-container" id="media-container">
-                    <video id="video" style="display: none;" controls></video>
-                    <audio id="audio" style="display: none;" controls></audio>
+                <div class="media-container my-6" id="media-container">
+                    <video id="video" class="hidden w-4/5 mx-auto rounded-lg shadow-lg" controls></video>
+                    <audio id="audio" controls class="hidden w-full max-w-md mx-auto shadow-lg rounded-2xl"></audio>
                 </div>
 
-                <div id="input-group">
-                    <p class="upload-text">Arraste e solte seu arquivo aqui ou</p>
-                    <label for="file-input" class="btn" id="file-input-label">
-                        <i class="fas fa-folder-open"></i> Selecionar arquivo
+                <div id="input-group" class="flex flex-col items-center gap-4">
+                    <p class="upload-text text-gray-400 text-lg mb-2">Arraste e solte seu arquivo aqui ou</p>
+                    <label for="file-input" class="btn bg-gradient-to-r from-primary to-secondary text-white px-6 py-3 rounded-lg font-medium cursor-pointer hover:shadow-lg hover:shadow-primary/30 transform hover:scale-105 transition-all duration-300" id="file-input-label">
+                        <i class="fas fa-folder-open mr-2"></i> Selecionar arquivo
                     </label>
-                    <input type="file" id="file-input" accept=".wav,.mp3,.m4a,.mp4,.ogg,.webm">
-                    <p class="supported-formats">Formatos suportados: WAV, MP3, M4A, MP4</p>
+                    <input type="file" id="file-input" accept=".aac,.flac,.wav,.mp3,.m4a,.opus,.mp4,.ogg,.webm" class="hidden">
+                    <p class="supported-formats text-gray-500 text-sm">Formatos suportados: WAV, MP3, M4A, MP4, WEBM, or OGG</p>
 
-                    <button class="btn" id="transcribe-btn">
-                        <i class="fas fa-transcribe"></i> Transcrever
+                    <button class="btn hidden bg-gradient-to-r from-accent to-orange-600 text-white px-6 py-3 rounded-lg font-medium hover:shadow-lg hover:shadow-accent/30 transform hover:scale-105 transition-all duration-300 mt-4" id="transcribe-btn">
+                        <i class="fas fa-transcribe mr-2"></i> Transcrever
                     </button>
                 </div>
             </div>
 
-            <div class="language-selector">
-                <label for="language"><i class="fas fa-language"></i> Idioma:</label>
-                <select id="language">
+            <div class="language-selector flex items-center justify-center gap-4 bg-gray-800 p-4 rounded-lg">
+                <label for="language" class="flex items-center gap-2 text-gray-300">
+                    <i class="fas fa-language text-primary"></i> Idioma:
+                </label>
+                <select id="language" class="bg-gray-700 text-white border border-gray-600 rounded-lg px-8 py-2 focus:border-primary focus:ring-1 focus:ring-primary outline-none">
                     <option value="en-us">Inglês (EUA)</option>
                     <option value="pt" selected>Português (Brasil)</option>
                 </select>
             </div>
 
-            <div id="loading" class="loading" style="display: none;">
-                <div class="loading-spinner"></div>
-                <p>Processando seu arquivo...</p>
+            <div id="loading" class="hidden text-center bg-gray-800 rounded-xl p-8 my-8">
+                <div class="w-12 h-12 border-4 border-gray-600 border-t-primary rounded-full animate-spin-custom mx-auto mb-4"></div>
+                <p class="text-gray-400 text-lg">Processando seu arquivo...</p>
             </div>
         </main>
 
-        <div id="transcription-result" class="transcription-result" style="display: none;">
-            <h2><i class="fas fa-scroll"></i> Resultado da Transcrição</h2>
-            <div class="result-text" id="result-text"></div>
-            <button class="btn btn-copy" id="copy-btn">
-                <i class="fas fa-copy"></i> Copiar Texto
-            </button>
-        </div>
-    </div>
+        <div id="transcription-result" class="hidden bg-gray-800 rounded-xl p-8 mt-8 border border-gray-700">
+            <h2 class="text-white mb-6 flex items-center gap-2 text-2xl">
+                <i class="fas fa-scroll text-success"></i> Resultado da Transcrição
+            </h2>
+            <div class="result-text bg-gray-900 border border-gray-600 rounded-lg p-6 mb-6 leading-relaxed text-white text-lg min-h-[150px] whitespace-pre-wrap break-words" id="result-text"></div>
 
-    <div id="error-modal" class="modal">
-        <div class="modal-content">
-            <span id="error-close" class="close">&times;</span>
-            <div class="modal-icon error-icon">
-                <i class="fas fa-exclamation-circle"></i>
+            <div class="btn-group flex flex-wrap gap-4 justify-center">
+                <button class="btn bg-gradient-to-r from-primary to-secondary text-white px-6 py-3 rounded-lg font-medium hover:shadow-lg hover:shadow-primary/30 transform hover:scale-105 transition-all duration-300" id="copy-btn">
+                    <i class="fas fa-copy mr-2"></i> Copiar Texto
+                </button>
+
+                <div class="audio-controls flex gap-2">
+                    <button class="btn hidden bg-error text-white px-4 py-3 rounded-lg font-medium hover:shadow-lg hover:shadow-error/30 transform hover:scale-105 transition-all duration-300" id="stop-btn">
+                        <i class="fas fa-stop"></i>
+                    </button>
+
+                    <button class="btn bg-gradient-to-r from-success to-green-600 text-white px-4 py-3 rounded-lg font-medium hover:shadow-lg hover:shadow-success/30 transform hover:scale-105 transition-all duration-300" id="play-btn">
+                        <i id="play-icon" class="fas fa-volume-up"></i>
+                    </button>
+                </div>
             </div>
-            <h3>Ocorreu um erro</h3>
-            <p id="error-message"></p>
         </div>
     </div>
 
-    <script type="module" src="./static/js/app.js"></script>
+    <div id="error-modal" class="hidden fixed inset-0 z-50 bg-black bg-opacity-90 backdrop-blur-sm">
+        <div class="bg-gray-800 mx-auto mt-24 p-8 border border-gray-600 rounded-xl w-11/12 max-w-lg text-center relative shadow-2xl">
+            <span id="error-close" class="text-gray-500 float-right text-3xl font-bold cursor-pointer absolute top-4 right-6 hover:text-white transition-colors">&times;</span>
+            <div class="modal-icon mb-6">
+                <i class="fas fa-exclamation-circle text-5xl text-error"></i>
+            </div>
+            <h3 class="text-white mb-4 text-2xl">Ocorreu um erro</h3>
+            <p id="error-message" class="text-gray-300 text-base leading-relaxed"></p>
+        </div>
+    </div>
+    <script type="module" src="./static/js/app.js?v=timestamp"></script>
 </body>
-
 </html>
