@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documentação - Transcrição de Áudio e Vídeo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="./static/css/styles.css">
+</head>
+
+<body class="bg-gray-900 text-white min-h-screen font-sans">
+    <div class="max-w-6xl mx-auto p-6 min-h-screen">
+        <header class="flex justify-between items-center pb-4 border-b border-gray-700 text-primary opacity-80">
+            <h1 class="text-3xl flex items-center gap-2">
+                <i class="fas fa-microphone-alt text-secondary"></i>
+                <span>/</span>
+                <i class="fas fa-video text-secondary"></i>
+                <span id="typing-text" class="typing-effect">Documentação</span>
+            </h1>
+            <nav class="flex gap-6">
+                <a href="/" class="text-primary hover:text-accent transition-colors font-medium">
+                    <i class="fas fa-home mr-2"></i> Home
+                </a>
+                <a href="/docs" class="text-primary hover:text-accent transition-colors font-medium">
+                    <i class="fas fa-info-circle mr-2"></i> Sobre
+                </a>
+            </nav>
+        </header>
+
+        <div class="max-w-6xl mx-auto py-8">
+            <div class="grid grid-cols-1 md:grid-cols-[250px_1fr] gap-8">
+                <aside class="docs-sidebar sticky top-8 self-start">
+                    <ul class="space-y-2">
+                        <li>
+                            <a href="#como-usar"
+                                class="flex items-center text-gray-400 hover:text-white hover:bg-gray-700 active:bg-gray-700 active:text-white block py-2 px-4 rounded transition-all">
+                                <i class="fas fa-play text-primary mr-2"></i> Como Usar
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#formatos-suportados"
+                                class="flex items-center text-gray-400 hover:text-white hover:bg-gray-700 active:bg-gray-700 active:text-white block py-2 px-4 rounded transition-all">
+                                <i class="fas fa-file-audio text-primary mr-2"></i> Formatos Suportados
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#duvidas"
+                                class="flex items-center text-gray-400 hover:text-white hover:bg-gray-700 active:bg-gray-700 active:text-white block py-2 px-4 rounded transition-all">
+                                <i class="fas fa-question-circle text-primary mr-2"></i> Dúvidas Frequentes
+                            </a>
+                        </li>
+                    </ul>
+                </aside>
+
+                <main class="bg-gray-800 p-8 rounded-xl shadow-lg">
+                    <section id="como-usar" class="mb-12">
+                        <h2 class="text-primary text-2xl mb-6 pb-2 border-b border-gray-600">Como Usar</h2>
+
+                        <div class="space-y-6">
+                            <div class="flex gap-4">
+                                <div
+                                    class="bg-primary text-white w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 font-bold">
+                                    1</div>
+                                <div class="flex-1">
+                                    <h3 class="text-accent text-lg font-semibold mb-2">Selecione seu arquivo</h3>
+                                    <p class="text-gray-300 mb-3">Na página principal, clique no botão "Selecionar
+                                        arquivo" ou arraste e solte seu arquivo de áudio ou vídeo na área indicada.</p>
+                                    <div class="bg-gray-700 p-4 rounded-lg font-mono text-sm overflow-x-auto">
+                                        Formatos suportados: .wav, .mp3, .m4a, .mp4
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex gap-4">
+                                <div
+                                    class="bg-primary text-white w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 font-bold">
+                                    2</div>
+                                <div class="flex-1">
+                                    <h3 class="text-accent text-lg font-semibold mb-2">Escolha o idioma</h3>
+                                    <p class="text-gray-300 mb-3">Selecione o idioma do conteúdo no menu suspenso.</p>
+                                    <ul class="text-gray-300 space-y-1 ml-4">
+                                        <li class="list-disc">Português (Brasil)</li>
+                                        <li class="list-disc">Inglês (EUA)</li>
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="flex gap-4">
+                                <div
+                                    class="bg-primary text-white w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 font-bold">
+                                    3</div>
+                                <div class="flex-1">
+                                    <h3 class="text-accent text-lg font-semibold mb-2">Inicie a transcrição</h3>
+                                    <p class="text-gray-300 mb-3">Clique no botão "Transcrever" para iniciar o processo.
+                                        O tempo de processamento varia de acordo com o tamanho do arquivo.</p>
+                                    <div class="bg-gray-700 p-4 rounded-lg flex items-center gap-2">
+                                        <i class="fas fa-info-circle text-primary"></i>
+                                        <span class="text-gray-300">Arquivos maiores podem levar alguns minutos</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="flex gap-4">
+                                <div
+                                    class="bg-primary text-white w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 font-bold">
+                                    4</div>
+                                <div class="flex-1">
+                                    <h3 class="text-accent text-lg font-semibold mb-2">Visualize e copie o resultado
+                                    </h3>
+                                    <p class="text-gray-300 mb-3">Após a conclusão, o texto transcrito será exibido.
+                                        Você pode:</p>
+                                    <ul class="text-gray-300 space-y-1 ml-4">
+                                        <li class="list-disc">Copiar o texto para a área de transferência</li>
+                                        <li class="list-disc">Ouvir a transcrição em voz alta</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section id="formatos-suportados" class="mb-12">
+                        <h2 class="text-primary text-2xl mb-6 pb-2 border-b border-gray-600">Formatos Suportados</h2>
+                        <p class="text-gray-300 mb-6">Nossa aplicação suporta os seguintes formatos de arquivo:</p>
+
+                        <div class="mb-6">
+                            <h3 class="text-accent text-lg font-semibold mb-4 mt-6">Áudio</h3>
+                            <ul class="text-gray-300 space-y-2 ml-4">
+                                <li class="list-disc"><strong class="text-white">WAV</strong> - Qualidade sem perdas (recomendado para melhor precisão)</li>
+                                <li class="list-disc"><strong class="text-white">MP3</strong> - Formato comprimido mais comum</li>
+                                <li class="list-disc"><strong class="text-white">M4A</strong> - Formato usado por dispositivos Apple</li>
+                                <li class="list-disc"><strong class="text-white">OGG</strong> - Formato aberto e livre</li>
+                                <li class="list-disc"><strong class="text-white">AAC</strong> - Compactação eficiente com melhor qualidade que MP3 em taxas mais baixas</li>
+                                <li class="list-disc"><strong class="text-white">FLAC</strong> - Áudio sem perdas com alta fidelidade e compressão</li>
+                                <li class="list-disc"><strong class="text-white">OPUS</strong> - Codec moderno e eficiente, ideal para voz e streaming em tempo real</li>
+                            </ul>                            
+                        </div>
+
+                        <div class="mb-6">
+                            <h3 class="text-accent text-lg font-semibold mb-4 mt-6">Vídeo</h3>
+                            <ul class="text-gray-300 space-y-2 ml-4">
+                                <li class="list-disc"><strong class="text-white">MP4</strong> - Formato mais compatível
+                                </li>
+                                <li class="list-disc"><strong class="text-white">WebM</strong> - Formato aberto para web
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-gray-700 p-4 rounded-lg flex items-center gap-2">
+                            <i class="fas fa-lightbulb text-warning"></i>
+                            <span class="text-gray-300">Dica: Para melhores resultados, use arquivos com taxa de bits
+                                mínima de 128kbps</span>
+                        </div>
+                    </section>
+
+                    <section id="duvidas" class="mb-12">
+                        <h2 class="text-primary text-2xl mb-6 pb-2 border-b border-gray-600">Dúvidas Frequentes</h2>
+
+                        <div class="space-y-6">
+                            <div>
+                                <h3 class="text-accent text-lg font-semibold mb-3 mt-6">Qual a precisão da transcrição?
+                                </h3>
+                                <p class="text-gray-300">A precisão varia de 85% a 95% dependendo da qualidade do áudio,
+                                    sotaque e ruído de fundo. Arquivos com boa qualidade de gravação tendem a ter
+                                    melhores resultados.</p>
+                            </div>
+
+                            <div>
+                                <h3 class="text-accent text-lg font-semibold mb-3 mt-6">Posso transcrever vídeos longos?
+                                </h3>
+                                <p class="text-gray-300">Sim, mas recomendamos dividir vídeos muito longos (mais de 30
+                                    minutos) em partes menores para melhor desempenho.</p>
+                            </div>
+
+                            <div>
+                                <h3 class="text-accent text-lg font-semibold mb-3 mt-6">Como melhorar a qualidade da
+                                    transcrição?</h3>
+                                <ul class="text-gray-300 space-y-1 ml-4">
+                                    <li class="list-disc">Use arquivos com boa qualidade de gravação</li>
+                                    <li class="list-disc">Reduza ruídos de fundo</li>
+                                    <li class="list-disc">Áudios com múltiplos idiomas podem reduzir a precisão da
+                                        transcrição.</li>
+                                    <li class="list-disc">Evite falas sobrepostas</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+                </main>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                document.querySelectorAll('.docs-sidebar a').forEach(a => {
+                    a.classList.remove('active');
+                });
+                this.classList.add('active');
+                
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        window.addEventListener('scroll', function () {
+            const sections = document.querySelectorAll('section[id]');
+            let current = '';
+
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= (sectionTop - 100)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            document.querySelectorAll('.docs-sidebar a').forEach(a => {
+                a.classList.remove('active');
+                if (a.getAttribute('href') === '#' + current) {
+                    a.classList.add('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
