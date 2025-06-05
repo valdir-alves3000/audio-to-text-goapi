@@ -23,5 +23,8 @@ export const VIEW = {
     errorMessage: document.getElementById('error-message'),
     errorClose: document.getElementById('error-close'),
 
-    copyBtn: document.getElementById('copy-btn')
-};
+    copyBtn: document.getElementById('copy-btn'),
+    playBtn: document.getElementById('play-btn'),
+    stopBtn: document.getElementById('stop-btn'),
+    playIcon: document.getElementById('play-icon'),
+}
