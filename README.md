@@ -42,6 +42,25 @@ pip install vosk
 go run cmd/server/main.go
 ```
 
+## Execução com Docker
+
+Você pode rodar o projeto com Docker para evitar a configuração manual do ambiente.
+
+### Pré-requisitos:
+
+* Docker
+* Docker Compose
+
+### Passos:
+
+1. Execute o Docker Compose:
+
+```bash
+docker compose up --build
+```
+
+---
+
 ## Como usar
 
 * Acesse `http://localhost:8080` no navegador
