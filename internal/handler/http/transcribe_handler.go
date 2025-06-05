@@ -10,7 +10,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/valdir-alves3000/audio-to-text-goapi/internal/process"
-	"github.com/valdir-alves3000/audio-to-text-goapi/internal/utils"
+	util "github.com/valdir-alves3000/audio-to-text-goapi/internal/utils"
 )
 
 var modelMapping = map[string]bool{
@@ -49,7 +49,7 @@ func TranscribeHandler(c *gin.Context) {
 	if !util.IsSupportedFormat(ext) {
 		log.Println("Unsupported format: %v", err)
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Unsupported format. Use WAV, MP3, M4A, or MP4",
+			"error": "Unsupported format. Use WAV, MP3, M4A, MP4, WEBM, MPEG, AVI or MOV",
 		})
 		return
 	}
@@ -64,12 +64,27 @@ func TranscribeHandler(c *gin.Context) {
 	defer os.Remove(tempFile.Name())
 	defer tempFile.Close()
 
-	wavFile, err := process.ConvertToWAVIfNeeded(tempFile.Name(), ext)
+	hasAudio, err := process.HasAudioStream(tempFile.Name())
 	if err != nil {
-		log.Println("failed to convert to WAV: %v", err)
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to convert to WAV"})
+		log.Printf("Failed to analyze audio stream: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Internal error while analyzing audio stream"})
 		return
 	}
+
+	if !hasAudio {
+		message := "No audio stream found in the uploaded video"
+		log.Println(message)
+		c.JSON(http.StatusBadRequest, gin.H{"error": message})
+		return
+	}
+
+	wavFile, err := process.ConvertToWAVIfNeeded(tempFile.Name(), ext)
+	if err != nil {
+		log.Printf("Failed to convert to WAV: %v", err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to convert to WAV"})
+		return
+	}
+
 	if wavFile != tempFile.Name() {
 		defer os.Remove(wavFile)
 	}
