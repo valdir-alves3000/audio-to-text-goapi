@@ -1,6 +1,6 @@
-import { VIEW } from './view.js';
-import { getSelectedFile } from './file_handler.js';
-import { showError } from './error.js';
+import { VIEW } from './view.js?v=timestamp';
+import { getSelectedFile } from './file_handler.js?v=timestamp';
+import { showError } from './error.js?v=timestamp';
 
 let abortController = null;
 
@@ -13,6 +13,9 @@ export async function handleTranscription() {
     abortController = controller;
 
     const file = getSelectedFile();
+    const formData = new FormData();
+    formData.append('audio', file);
+    formData.append('lang', VIEW.languageSelect.value);
 
     if (!file) {
         showError('Por favor, selecione um arquivo primeiro.');
@@ -21,10 +24,6 @@ export async function handleTranscription() {
 
     toggleLoading(true);
     clearTranscriptionResult();
-    
-    const formData = new FormData();
-    formData.append('audio', file);
-    formData.append('lang', VIEW.languageSelect.value);
 
     try {
         const response = await fetch('/api/transcribe', {
@@ -37,11 +36,23 @@ export async function handleTranscription() {
         });
 
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            let errorMsg = `HTTP error! status: ${response.status}`;
+            try {
+                const errorData = await response.json();
+                if (errorData?.error) {
+                    errorMsg = errorData.error; 
+                }
+            } catch (jsonErr) {
+                console.error("Failed to parse error response:", jsonErr);
+            }
+        
+            showError(errorMsg);
+            return; 
         }
+        
 
         if (!response.body) {
-            throw new Error('ReadableStream not supported in this browser');
+            showError('ReadableStream not supported in this browser');
         }
 
         const reader = response.body.getReader();
@@ -64,7 +75,7 @@ export async function handleTranscription() {
                     }
                 } else if (line.includes('event: end')) {
                     toggleLoading(false);
-                    return;
+                    break;
                 }
             }
         }
@@ -90,5 +101,13 @@ function updateTranscription(text) {
     VIEW.resultText.textContent = text;
     VIEW.transcriptionResult.style.display = 'block';
     VIEW.transcriptionResult.scrollTop = VIEW.transcriptionResult.scrollHeight;
+    setTimeout(() => {
+        VIEW.resultText.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 0);
 }
 
+window.addEventListener('beforeunload', () => {
+    if (abortController) {
+        abortController.abort();
+    }
+}); 
