@@ -848,6 +848,10 @@ select {
     }
 }
 
+.btn {
+    min-width: 50px;
+}
+
 /* Input Group Active State */
 #input-group.active .upload-text {
     display: none;
