@@ -3,8 +3,35 @@ import { getSelectedFile } from './file_handler.js?v=timestamp';
 import { showError } from './error.js?v=timestamp';
 
 let abortController = null;
+let displayedText = '';
+let typingQueue = '';
+let typingActive = false;
+const TYPING_SPEED = 40;
+
+function startTypingLoop() {
+    if (typingActive) return;
+
+    typingActive = true;
+
+    function tick() {
+        if (typingQueue.length > 0) {
+
+            displayedText += typingQueue[0];
+            typingQueue = typingQueue.slice(1);
+
+            updateTranscription(displayedText);
+            setTimeout(tick, TYPING_SPEED);
+
+        } else {
+            typingActive = false;
+        }
+    }
+
+    requestAnimationFrame(tick);
+}
 
 export async function handleTranscription() {
+
     if (abortController) {
         abortController.abort();
     }
@@ -13,14 +40,15 @@ export async function handleTranscription() {
     abortController = controller;
 
     const file = getSelectedFile();
-    const formData = new FormData();
-    formData.append('audio', file);
-    formData.append('lang', VIEW.languageSelect.value);
 
     if (!file) {
         showError('Por favor, selecione um arquivo primeiro.');
         return;
     }
+
+    const formData = new FormData();
+    formData.append('audio', file);
+    formData.append('lang', VIEW.languageSelect.value);
 
     toggleLoading(true);
     clearTranscriptionResult();
@@ -40,26 +68,26 @@ export async function handleTranscription() {
             try {
                 const errorData = await response.json();
                 if (errorData?.error) {
-                    errorMsg = errorData.error; 
+                    errorMsg = errorData.error;
                 }
             } catch (jsonErr) {
                 console.error("Failed to parse error response:", jsonErr);
             }
-        
+
             showError(errorMsg);
-            return; 
+            return;
         }
-        
 
         if (!response.body) {
             showError('ReadableStream not supported in this browser');
+            return;
         }
 
         const reader = response.body.getReader();
         const decoder = new TextDecoder();
-        let fullTranscript = '';
 
         while (true) {
+
             const { done, value } = await reader.read();
             if (done) break;
 
@@ -67,25 +95,36 @@ export async function handleTranscription() {
             const lines = textChunk.split('\n');
 
             for (const line of lines) {
+
                 if (line.startsWith('data: ')) {
+
                     const data = line.substring(6).trim();
-                    if (data) {
-                        fullTranscript += ` ${data}`;
-                        updateTranscription(fullTranscript);
-                    }
+                    if (!data) continue;
+
+                    // Add incoming chunk to typing queue
+                    typingQueue += (displayedText ? ' ' : '') + data;
+
+                    startTypingLoop();
+
                 } else if (line.includes('event: end')) {
+
                     toggleLoading(false);
                     break;
                 }
             }
         }
+
     } catch (error) {
+
         showError('Falha na Transcrição do arquivo: ' + error.message);
         console.error('Transcription error:', error);
+
     } finally {
         toggleLoading(false);
     }
 }
+
+// ===== UI Helpers =====
 
 function toggleLoading(show) {
     VIEW.loading.style.display = show ? 'block' : 'none';
@@ -93,6 +132,10 @@ function toggleLoading(show) {
 }
 
 function clearTranscriptionResult() {
+    displayedText = '';
+    typingQueue = '';
+    typingActive = false;
+
     VIEW.transcriptionResult.style.display = 'none';
     VIEW.resultText.textContent = '';
 }
@@ -100,14 +143,16 @@ function clearTranscriptionResult() {
 function updateTranscription(text) {
     VIEW.resultText.textContent = text;
     VIEW.transcriptionResult.style.display = 'block';
-    VIEW.transcriptionResult.scrollTop = VIEW.transcriptionResult.scrollHeight;
-    setTimeout(() => {
-        VIEW.resultText.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 0);
+
+    // Scroll otimizado (não a cada letra)
+    if (typingQueue.length % 20 === 0) {
+        VIEW.transcriptionResult.scrollTop = VIEW.transcriptionResult.scrollHeight;
+    }
 }
 
+// ===== Cancel streaming on page unload =====
 window.addEventListener('beforeunload', () => {
     if (abortController) {
         abortController.abort();
     }
-}); 
+});
