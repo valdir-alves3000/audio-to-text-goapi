@@ -1,6 +1,7 @@
 services:
   audio-to-text-goapi:
     build: .
+    image: valdir/audio-to-text-goapi:latest
     ports:
-      - "8080:8080"    
+      - "8080:8080"
     restart: unless-stopped
