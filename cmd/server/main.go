@@ -1,11 +1,13 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 
 	"github.com/gin-gonic/gin"
-	"github.com/valdir-alves3000/audio-to-text-goapi/internal/handler/http"
+	httpHandler "github.com/valdir-alves3000/audio-to-text-goapi/internal/handler/http"
+	"github.com/valdir-alves3000/audio-to-text-goapi/internal/process"
 	"github.com/valdir-alves3000/audio-to-text-goapi/internal/utils"
 )
 
@@ -18,11 +20,27 @@ func main() {
 		log.Fatalf("Failed to create models directory: %v", err)
 	}
 
-	r := gin.Default()
-	http.RegisterRoutes(r)
+	worker, err := process.GetWhisperWorker()
+	if err != nil {
+		log.Fatalf("Failed to start Whisper worker: %v", err)
+	}
 
-	log.Println("Server running on port 8080...")
-	if err := r.Run(":8080"); err != nil {
+	r := gin.Default()
+
+	httpHandler.RegisterRoutes(r, worker)
+
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
+	url := fmt.Sprintf("http://localhost:%s", port)
+
+	log.Println("====================================")
+	log.Printf("🚀 Server running at %s\n", url)
+	log.Println("====================================")
+
+	if err := r.Run(":" + port); err != nil {
 		log.Fatal(err)
 	}
 }
