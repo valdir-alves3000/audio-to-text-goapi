@@ -2,6 +2,7 @@ package http
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/valdir-alves3000/audio-to-text-goapi/internal/process"
 )
 
 func noCache(c *gin.Context) {
@@ -12,14 +13,16 @@ func noCache(c *gin.Context) {
 	c.Next()
 }
 
-func RegisterRoutes(r *gin.Engine) {
+func RegisterRoutes(r *gin.Engine, worker *process.WhisperWorker) {
+
 	r.Use(noCache)
+
 	r.Static("/static", "./web/static")
 	r.GET("/", HomePageHandler)
 	r.GET("/docs", DocsHandler)
 
 	api := r.Group("/api")
 	{
-		api.POST("/transcribe", TranscribeHandler)
+		api.POST("/transcribe", NewTranscribeHandler(worker))
 	}
 }
