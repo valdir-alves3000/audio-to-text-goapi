@@ -56,59 +56,117 @@ func convertToWAV(inputPath string) (string, error) {
 	return outputPath, nil
 }
 
-func SplitAudioInChunks(inputPath string, chunkDuration int) ([]string, error) {
+func SplitAudioInChunks(inputPath string, maxChunkDuration int) ([]string, error) {
+
 	if _, err := os.Stat(inputPath); os.IsNotExist(err) {
 		return nil, fmt.Errorf("input file not found: %s", inputPath)
 	}
 
-	cmd := exec.Command("ffprobe", "-v", "error", "-show_entries",
-		"format=duration", "-of", "default=noprint_wrappers=1:nokey=1", inputPath)
+	cmd := exec.Command(
+		"ffmpeg",
+		"-i", inputPath,
+		"-af", "silencedetect=noise=-30dB:d=0.5",
+		"-f", "null",
+		"-",
+	)
 
-	var out bytes.Buffer
-	cmd.Stdout = &out
-	cmd.Stderr = &out
+	var stderr bytes.Buffer
+	cmd.Stderr = &stderr
 
 	if err := cmd.Run(); err != nil {
-		return nil, fmt.Errorf("error getting audio duration: %v\n%s", err, out.String())
+		return nil, fmt.Errorf("silence detection failed: %v", err)
 	}
 
-	durationStr := strings.TrimSpace(out.String())
-	duration, err := strconv.ParseFloat(durationStr, 64)
-	if err != nil {
-		return nil, fmt.Errorf("error converting duration: %v", err)
+	lines := strings.Split(stderr.String(), "\n")
+
+	var silenceEnds []float64
+
+	for _, line := range lines {
+		if strings.Contains(line, "silence_end:") {
+			parts := strings.Split(line, "silence_end:")
+			if len(parts) < 2 {
+				continue
+			}
+
+			value := strings.Fields(parts[1])[0]
+			timestamp, err := strconv.ParseFloat(value, 64)
+			if err == nil {
+				silenceEnds = append(silenceEnds, timestamp)
+			}
+		}
+	}
+
+	if len(silenceEnds) == 0 {
+		return []string{inputPath}, nil
 	}
 
 	var chunks []string
 	base := strings.TrimSuffix(inputPath, filepath.Ext(inputPath))
 
-	for i := 0.0; i < duration; i += float64(chunkDuration) {
-		start := fmt.Sprintf("%.2f", i)
-		outfile := fmt.Sprintf("%s_part_%02d.wav", base, int(i)/chunkDuration)
+	start := 0.0
+	index := 0
 
-		if err := createAudioChunk(inputPath, outfile, start, chunkDuration); err != nil {
+	for _, end := range silenceEnds {
+
+		if end-start < 1.0 {
+			continue
+		}
+
+		if end-start > float64(maxChunkDuration) {
+			end = start + float64(maxChunkDuration)
+		}
+
+		outfile := fmt.Sprintf("%s_part_%02d.wav", base, index)
+
+		err := createAudioChunk(
+			inputPath,
+			outfile,
+			fmt.Sprintf("%.3f", start),
+			fmt.Sprintf("%.3f", end-start),
+		)
+
+		if err != nil {
 			return nil, err
 		}
 
 		chunks = append(chunks, outfile)
+
+		start = end
+		index++
 	}
 
 	return chunks, nil
 }
 
-func createAudioChunk(inputPath, outputPath, start string, duration int) error {
-	cmd := exec.Command("ffmpeg", "-i", inputPath, "-ss", start, "-t", fmt.Sprintf("%d", duration), "-c", "copy", "-y", outputPath)
+func createAudioChunk(inputPath, outputPath, start, duration string) error {
+
+	cmd := exec.Command(
+		"ffmpeg",
+		"-v", "error",
+		"-ss", start,
+		"-i", inputPath,
+		"-t", duration,
+		"-ar", "16000",
+		"-ac", "1",
+		"-acodec", "pcm_s16le",
+		"-y",
+		outputPath,
+	)
+
 	var stderr bytes.Buffer
 	cmd.Stderr = &stderr
+
 	if err := cmd.Run(); err != nil {
-		return fmt.Errorf("error creating chunk: %v\n%s", err, stderr.String())
+		return fmt.Errorf("chunk creation failed: %v\n%s", err, stderr.String())
 	}
+
 	return nil
 }
 
 func HasAudioStream(filePath string) (bool, error) {
 	cmd := exec.Command("ffprobe",
 		"-v", "error",
-		"-select_streams", "a", // seleciona apenas áudio
+		"-select_streams", "a",
 		"-show_entries", "stream=codec_type",
 		"-of", "default=noprint_wrappers=1:nokey=1",
 		filePath,
