@@ -124,7 +124,6 @@ docker compose up --build
 * Cancelamento via context (cliente desconecta → processamento para)
 * Conversão automática para WAV
 * Suporte a múltiplos formatos
-* Arquitetura desacoplada e pronta para escalar
 
 ---
 
